@@ -1,0 +1,43 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-04-09
+Version: 20190409
+"""
+-->
+{% extends 'base.html' %}
+{% block title %} Drop Server {% endblock %}
+{% block content %}
+{% if error %}
+<div class="container">
+    <div class="row clearfix" style="height:60px">
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>ERROR!</strong>
+            {% for err in error %}
+                <pre> {{ err }} </pre></br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="container" style="max-height:500px">
+    <h3>Drop DB Host</h3>
+    <form action="" method = "POST">
+        {% csrf_token %}
+        <div class="row clearfix" sytle="height:200px">
+            <div class="col-md-12" style="max-height:150px">
+                <div class="col-md-2" style="max-height:150px">
+                    {{ forms.full_hostname.label_tag }}
+                </div>
+                {{ forms.full_hostname}}
+            </div>
+            <div class="col-md-12" style="max-height:150px">
+                <input type="submit" value = "Submit" onclick="return submitcfm();" />
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190320
+"""
+-->
+{% extends 'base.html' %}
+{% block title %} Server-DB List {% endblock %}
+{% block content %}
+<div class="container" >
+        <div class="row clearfix" style="height:60px">
+            <div class="col-md-6 column">
+                <h3>Server-DB</h3>
+            </div>
+        </div>
+        <div class="row clearfix" style="height:40px">
+            <div class="col-md-6 column">
+                <h5>Server Name: {{ servername }}</h5>
+            </div>
+        </div>
+        <div class="row pre-scrollable" style="max-height:980px;overflow:auto;border:1px solid black;">
+            <div class="col-md-12 column" style="height:80">
+                <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search...">
+            </div>
+            <table class="table table-bordered" id="myTable">
+                <tr>
+                    <th>DB NAME</th><th>DB Port</th><th>DB Size</th><th>DB Env</th><th>DB Topology</th><th>Is Pgsync</th><th>v_hostname</th>
+                </tr>
+                {% for dbname in dblist %}
+                <tr>
+                    <td><a href="/db_ops/tablelist/{{ servername }}/{{ dbname.dbname }}/">{{ dbname.dbname  }}</a></td>
+                    <td>{{ dbname.v_hostname }}</td>
+                    <td>{{ dbname.port       }}</td>
+                    <td>{{ dbname.dbsize     }}</td>
+                    <td>{{ dbname.env        }}</td>
+                    <td>{{ dbname.topology   }}</td>
+                    <td>{{ dbname.is_pgsync  }}</td>
+                    <td>{{ dbname.v_hostname }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

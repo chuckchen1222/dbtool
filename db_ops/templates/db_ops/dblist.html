@@ -1,0 +1,65 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190320
+"""
+-->
+{% extends 'base.html' %}
+{% block title %} DB List {% endblock %}
+{% block content %}
+<div class="container" >
+    <div class="row clearfix" style="height:60px">
+        <div class="col-md-6 column">
+            <h3>ALL Databases </h3>
+        </div>
+    </div>
+    <div class="row pre-scrollable" style="max-height:980px;overflow:auto;border:1px solid black;">
+        <div class="col-md-4 column" style="height:80">
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search DBName...">
+        </div>
+        <div class="col-md-4 column" style="height:80">
+            <input type="text" id="myInput1" onkeyup="myFunction1()" placeholder="Search Host...">
+        </div>    
+
+        <table class="table table-bordered" id="myTable">
+            <tr>
+                <th>DB Name</th><th>Host</th><th>DB Port</th><th>DB Size</th><th>ENV</th><th>DB Topology</th><th>is Pgsync</th>
+            </tr>
+            {% for dbname in dblist %}
+            <tr>
+                <td><a href="/db_ops/tablelist/{{ dbname.v_hostname }}/{{ dbname.dbname }}/">{{ dbname.dbname  }}</a></td>
+                <td>{{ dbname.v_hostname }}</td>
+                <td>{{ dbname.port       }}</td>
+                <td>{{ dbname.dbsize     }}</td>
+                <td>{{ dbname.env        }}</td>
+                <td>{{ dbname.topology   }}</td>
+                <td>{{ dbname.is_pgsync  }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    function myFunction1() {
+      var input, filter, table, tr, td, i;
+      input = document.getElementById("myInput1");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+    
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+</script>
+{% endblock %}

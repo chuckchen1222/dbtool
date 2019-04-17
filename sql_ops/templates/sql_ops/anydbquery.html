@@ -1,0 +1,92 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190322
+"""
+-->
+
+{% extends 'base.html' %}
+{% block title %}DB Query{% endblock %}
+{% block content %}
+<div class="container" style="max-height:500px">
+    <h5>SQL Query.</h5>
+    <form action="" method = "POST">
+        {% csrf_token %}
+        <div class="row clearfix" sytle="height:200px">
+            <div class="col-md-4" style="max-height:50px">
+                <label class="col-md-2 control-label">{{ forms.dbtype.label }}</label>
+                <div class="select">
+                    {{ forms.dbtype }}
+                </div>
+            </div>
+            <div class="col-md-4" style="max-height:80px">
+                {{ forms.hostname.label_tag }}
+                {{ forms.hostname}}
+            </div>
+            <div class="col-md-4" style="max-height:80px">
+                {{ forms.port.label_tag }}
+                {{ forms.port}}
+            </div>
+            <div class="col-md-4" style="max-height:80px">
+                {{ forms.dbname.label_tag }}
+                {{ forms.dbname}}
+            </div>
+            <div class="col-md-4" style="max-height:80px">
+                {{ forms.username.label_tag }}
+                {{ forms.username}}
+            </div>
+            <div class="col-md-4" style="max-height:80px">
+                {{ forms.password.label_tag }}
+                {{ forms.password}}
+            </div>
+            <div class="col-md-12" style="max-height:80px">
+                {{ forms.sql }}
+            </div>
+            <input type="submit" value = "Submit" data-toggle="modal" data-target="#myModal" onclick="return submitcfm();" />
+        </div>
+    </form>
+</div>
+{% if query_results %}
+<div class="container">
+    <div class="row pre-scrollable" style="max-height:1000px;overflow:auto;border:1px solid black;">
+        <p>You searched DB Type: <strong>{{ dbtype }}</strong></p>
+        <p>You searched Host: <strong>{{ host }}:{{ port }}</strong></p>
+        <p>You searched DB  : <strong>{{ dbname }}</strong></p>
+        <p>You searched for : <strong>{{ query  }}</strong></p>
+        <table class="table table-bordered">
+            {% for result in query_results %}
+            <tr>
+                {% for i in result %}
+                    <td style="text-align:right;">{{ i }} </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </table>
+    </div>
+</div>
+{% elif error %}
+<div class="container">
+    <div class="row clearfix" style="height:60px">
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>ERROR!</strong>
+            {% for err in error %}
+                <p> {{ err }} </p></br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if query_results and sql_explain %}
+    <div class="container">
+        <div class="row clearfix" style="height:50px;border:1px solid black;">
+            <h3>SQL Explain: </h3>
+            {% for explain in sql_explain %}
+                <p> {{ explain.0 }} </p>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

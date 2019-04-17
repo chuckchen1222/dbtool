@@ -1,0 +1,86 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190318
+"""
+-->
+
+{% extends 'base.html' %}
+{% block title %}SQL Query{% endblock %}
+{% block content %}
+<div class="container" style="height:260px">
+    <h5>SQL Query.</h5>
+    <form action="" method = "POST">
+        {% csrf_token %}
+        <div class="row clearfix" sytle="height:220px">
+            <div class="col-md-4 form-group" style="height:30px">
+                    {{ QueryForms.dbname.label_tag }}
+                    {{ QueryForms.dbname}}
+            </div>
+            <div class="col-md-6 form-group" style="height:30px">
+                <label class="col-md-3">{{ QueryForms.env.label }}</label>
+                    {% for radio in QueryForms.env %}
+                    <label for="{{ radio.id_for_label }}">
+                        {{ radio.tag }}{{ radio.choice_label }}
+                    </label>
+                    {% endfor %}
+            </div>
+        </div>
+        <div class="row clearfix" style="height:100px">
+            <div class="col-md-12" style="max-height:80px">
+                {{ QueryForms.sql }}
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">{{ QueryForms.is_explain.label }}</label>
+                    <div class="select">
+                            {{ QueryForms.is_explain }}
+                    </div>
+            </div>
+            <input type="submit" value = "Submit" data-toggle="modal" data-target="#myModal" onclick="return submitcfm();" />
+        </div>
+    </form>
+</div>
+{% if query_results %}
+<div class="container">
+    <div class="row pre-scrollable" style="max-height:1200px;overflow:auto;border:1px solid black;">
+        <p>You searched Host: <strong>{{ host   }}</strong></p>
+        <p>You searched DB  : <strong>{{ dbname }}</strong></p>
+        <p>You searched for : <strong>{{ query  }}</strong></p>
+        <p>
+        <table class="table table-bordered">
+            {% for result in query_results %}
+            <tr>
+                {% for i in result %}
+                    <td style="text-align:right;">{{ i }} </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </table>
+    </div>
+</div>
+{% elif error %}
+<div class="container">
+    <div class="row clearfix" style="height:60px">
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>ERROR!</strong>
+            {% for err in error %}
+                <pre> {{ err }} </pre></br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if query_results and sql_explain %}
+    <div class="container">
+        <div class="row clearfix" style="height:50px;border:1px solid black;">
+            <h3>SQL Explain: </h3>
+            {% for explain in sql_explain %}
+                <p> {{ explain.0 }} </p>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

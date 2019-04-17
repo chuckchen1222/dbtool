@@ -1,0 +1,71 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190320
+"""
+-->
+{% extends 'base.html' %}
+{% block title %} DB Server List {% endblock %}
+{% block content %}
+{% if addserver %}
+<div class="container">
+    <div class="row clearfix" style="height:60px">
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>Added Server {{ addserver }}</strong>
+        </div>
+    </div>
+</div>
+{% elif dropserver %}
+<div class="container">
+        <div class="row clearfix" style="height:60px">
+            <div class="alert alert-warning">
+                <a class="close" data-dismiss="alert">×</a>
+                <strong>Droped Server {{ dropserver }}</strong>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="container" >
+    <div class="row clearfix" style="height:80px">
+        <div class="col-md-6 column">
+            <h3>DB Server List</h3>
+        </div>
+        <div class="col-md-6 column"  id="my-nav">
+            <div class="col-md-2 column">
+                <ul class="nav navbar-nav"><a href="../serveradd/">
+                    <button type="button" class="btn btn-sm btn-block btn-primary "> New Server </button>
+                </a></ul>
+            </div>
+            <div class="col-md-2 col-md-offset-2 column" >
+                <ul class="nav navbar-nav navbar"><a href="../serverdrop/">
+                    <button type="button" class="btn btn-sm btn-block btn-primary "> Drop Server </button>
+                </a></ul>
+            </div>
+        </div>
+    </div>
+    <div class="row pre-scrollable" style="max-height:980px;overflow:auto;border:1px solid black;">
+        <div class="col-md-12 column" style="height:80">
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search...">
+        </div>
+        <table class="table table-bordered" id="myTable">
+            <tr>
+                <th>Full Hostname</th><th>Short Hostname</th><th>V Hostname</th><th>IP</th><th>VIP</th><th>is_master</th><th>dc</th>
+            </tr>
+            {% for server in serverlist %}
+            <tr>
+                <td><a href="/server_ops/dblist/{{ server.short_hostname }}/">{{ server.short_hostname  }}</a></td>
+                <td><a href="/server_ops/dblist/{{ server.short_hostname }}/">{{ server.full_hostname  }}</a></td>
+                <td>{{ server.v_hostname   }}</td>
+                <td>{{ server.ip_addr      }}</td>
+                <td>{{ server.vip_addr     }}</td>
+                <td>{{ server.is_master    }}</td>
+                <td>{{ server.dc_id.dcname }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

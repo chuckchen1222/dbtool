@@ -1,0 +1,44 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190320
+"""
+-->
+{% extends 'base.html' %}
+{% block title %} DB-Table List {% endblock %}
+{% block content %}
+<div class="container" >
+    <div class="row clearfix" style="height:60px">
+        <div class="col-md-6 column">
+            <h3>DB-Table</h3>
+        </div>
+    </div>
+    <div class="row clearfix" style="height:60px">
+            <h5>Server Name: {{ servername }}</h5>
+            <h5>DB Name: {{ dbname }}</h5>
+    </div>
+    <div class="row pre-scrollable" style="max-height:980px;overflow:auto;border:1px solid black;">
+        <div class="col-md-12 column" style="height:80">
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search...">
+        </div>
+        <table class="table table-bordered" id="myTable">
+            <tr>
+                <th>Table Name</th><th>Schema Name</th><th>Table Size</th><th>Table Count</th><th>Is Sync</th><th>last_analyze</th><th>last_vacuum</th><th>comment</th>                </tr>
+            {% for table in tablelist %}
+            <tr>
+                <td><a href="/table_ops/{{ servername }}/{{ dbname }}/{{ table.table_name }}/">{{ table.table_name  }}</a></td>
+                <td>{{ table.schema_name  }}</td>
+                <td>{{ table.table_size   }}</td>
+                <td>{{ table.rows_count   }}</td>
+                <td>{{ table.sync_trigger }}</td>
+                <td>{{ table.last_analyze }}</td>
+                <td>{{ table.last_vacuum  }}</td>
+                <td>{{ table.comment      }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
+

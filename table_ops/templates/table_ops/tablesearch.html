@@ -1,0 +1,66 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190322
+"""
+-->
+{% extends 'base.html' %}
+{% block title %} All Table List {% endblock %}
+{% block content %}
+<div class="container" >
+    <div class="row clearfix" style="height:50px">
+        <div class="col-md-12 column">
+            <h3>Serach Table</h3>
+        </div>
+        <div class="col-md-12 column">
+            <form action="" method = "POST">
+                {% csrf_token %}
+                <div class="col-md-4" style="height:30px">
+                        <input type="text" value="Search Table Name..."  style="color:gray;width:100%" onfocus="if (this.value =='Search Table Name...'){this.value =''};this.style.color='black';" onblur="if (this.value ==''){this.value='Search Table Name...';this.style.color='gray'}" name='tablename'>
+                </div>
+                <input type="submit" value = "Submit" data-toggle="modal" data-target="#myModal" onclick="return submitcfm();"/>
+            </form>
+        </div>
+    </div>
+    {% if errors %}
+    <div class="row pre-scrollable" style="max-height:200px">
+        {% for err in error %}
+            <p> {{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if tablenames %}
+    <div class="row clearfix">
+        <div class="row pre-scrollable" style="max-height:980px;overflow:auto;border:1px solid black;">
+            <table class="table table-bordered" id="myTable">
+                <tr>
+                    <th>Server Name</th><th>DB name</th><th>Table Name</th><th>Schema Name</th><th>Table Size</th><th>Table Count</th><th>Is Sync</th><th>last_analyze</th><th>last_vacuum</th><th>comment</th>                </tr>
+                {% for table in tablenames %}
+                <tr>
+                    <td>{{ table.db_id.v_hostname }}</td>
+                    <td>{{ table.db_id.dbname     }}</td>
+                    <td><a href="/table_ops/{{ table.db_id.v_hostname }}/{{ table.db_id.dbname }}/{{ table.table_name }}/">{{ table.table_name  }}</a></td>
+                    <td>{{ table.schema_name  }}</td>
+                    <td>{{ table.table_size   }}</td>
+                    <td>{{ table.rows_count   }}</td>
+                    <td>{{ table.sync_trigger }}</td>
+                    <td>{{ table.last_analyze }}</td>
+                    <td>{{ table.last_vacuum  }}</td>
+                    <td>{{ table.comment      }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="row clearfix">
+        <div class="row pre-scrollable" style="max-height:980px;overflow:auto;border:1px solid black;">
+            <p>  </p>
+            <p> No hosts matched your search criteria.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

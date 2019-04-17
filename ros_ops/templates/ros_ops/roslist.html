@@ -1,0 +1,119 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190327
+"""
+-->
+{% extends 'base.html' %}
+{% block title %} ROS DB List {% endblock %}
+{% block content %}
+{% if error %}
+<div class="container">
+    <div class="row clearfix" style="height:60px">
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>ERROR!</strong>
+            {% for err in error %}
+                <pre> {{ err }} </pre></br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="container" >
+    <div class="row clearfix" style="height:60px">
+        <div class="col-md-6 column">
+            <h3>ROS Databases </h3>
+        </div>
+    </div>
+    <div class="row pre-scrollable" style="max-height:980px;overflow:auto;border:1px solid black;">
+        <div class="col-md-12 column" style="height:80">
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search...">
+        </div>
+        <table class="table table-bordered" id="myTable">
+            <tr>
+                <th>ROS DB</th><th>ENABLE</th><th>STATUS</th><th>Dump From TA</th><th>Restore</th>
+            </tr>
+            {% for ros in allros %}
+            {% if ros.1 == True %}
+            <tr>
+                <td id="dbname">{{ ros.0 }}</a></td>
+                <td>{{ ros.1 }}</td>
+                <td>{{ ros.2 }}</td>
+                <td>
+                    <button type="button" id="dump" class="btn btn-primary" onclick="postcommand(this,getcol1(this));"> Dump </button>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" id="restoretobaitu" class="btn btn-primary" onclick="postcommand(this,getcol1(this));"> Baitu </button>
+                        <button type="button" id="restoretolive" class="btn btn-primary" onclick="postcommand(this,getcol1(this));" > Live-Site </button>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td>{{ ros.0 }}</a></td>
+                <td>{{ ros.1 }}</td>
+                <td>
+                    <p>This ROS DB is disable.</p>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+    function getcol1(obj){
+        var $td = $(obj).parents('tr').children('td');
+        var col1 = $td.eq(0).text();
+        return col1;
+    }
+    function postcommand(obj,col1){
+        if ( obj.id == 'dump' ){
+            var action = 'redump';
+            var r=confirm('Are you sure redump ' + col1 +' from TA?');
+        }
+        else if( obj.id == 'restoretobaitu' ) {
+            var action = 'restoretobaitu';
+            var r=confirm('Are you restore DB ' + col1 +' to DaoDao Baitu?');
+        }
+        else if( obj.id == 'restoretolive'){
+            var action = 'restoretolive';
+            var r=confirm('Are you restore DB ' + col1 +' to DaoDao Live-Site?');
+        }
+        var execcommand = { 'dbname': col1, 'exec': action }
+        if (r==true){
+            $.post('.', execcommand)
+        }
+        else{
+            return false;
+        }
+    }
+</script>
+<script>
+    $(function(){
+        var tableId = document.getElementById("myTable")
+        for(var i=1;i<tableId.rows.length;i++){
+            var valueTd = tableId.rows[i].cells[2].innerHTML;
+            if (valueTd.search("FAILED") != -1){
+                tableId.rows[i].style.backgroundColor = "#FF5151";
+            }
+            else if ( valueTd.search("COMPLETED") == -1 ){
+                tableId.rows[i].style.backgroundColor = "pink";
+            }
+        }
+        setTimeout(function(){
+            window.location.reload(1);
+            }, 38888);
+    });
+</script>
+<script>
+</script>
+{% endblock %}

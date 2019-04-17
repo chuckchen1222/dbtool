@@ -1,0 +1,117 @@
+<!--
+Author: chzhang@tripadvisor.com
+Date: 2019-03-13
+Version: 20190315
+-->
+{% load static %}
+ 
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}base{% endblock %}</title>
+ 
+    <!-- Bootstrap -->
+    <link href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!--
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- love.js -->
+    <script src="{% static 'js/love.js' %}"></script>
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav" aria-expanded="false">
+            <span class="sr-only">Switch Nav</span>
+            <span class="icon-bar">  </span>
+            <span class="icon-bar">  </span>
+            <span class="icon-bar">  </span>
+          </button>
+          <a class="navbar-brand" href="/index/">HOME</a>
+        </div>
+ 
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="my-nav">
+          <ul class="nav navbar-nav">
+            {% for nav in navbarlist %}
+              {% if nav.is_dropdown %}
+                <li class="dropdown">
+                  <a href="{{ nav.url }}" class="dropdown-toggle" data-toggle="dropdown">{{ nav.name }}
+                    <b class="caret"></b>
+                  </a>
+                <!-- dropdown tools bar-->
+                  <ul class="dropdown-menu">
+                    {% for dropdown in dropdownlist %}
+                      {% if dropdown.toolsbar_id_id == nav.id %}
+                        <li><a href="{{ dropdown.url }}">{{ dropdown.name }}</a></li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% else %}
+                <li><a href="{{ nav.url }}">{{ nav.name }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+          <li><a id=show_time0></a>
+          <script>
+            setInterval("show_time0.innerHTML=new Date().toLocaleString()+' 星期'+'日一二三四五六'.charAt(new Date().getDay());",1000);  
+          </script>
+          </li>
+              {% if request.session.is_login %}
+                  <li><a href="#">{{ request.session.user_name }}</a></li>
+                  <li><a href="/user/logout/">logout</a></li>
+              {% else %}
+                  <li><a href="/user/login/">login</a></li>
+              {% endif %}
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+ 
+    {% block content %}{% endblock %}
+    {% block javascript %}{% endblock %}
+    <script>
+        function myFunction() {
+          var input, filter, table, tr, td, i;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable");
+          tr = table.getElementsByTagName("tr");
+        
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
+        </script>
+        <script>
+          $(function(){
+            $(".dropdown-toggle").dropdown('');
+          });
+        </script>
+  </body>
+</html>
