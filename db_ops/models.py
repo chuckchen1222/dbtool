@@ -47,6 +47,7 @@ class Pgsync(models.Model):
     dbname = models.CharField(max_length=256)
     master_db_id = models.ForeignKey(Database, on_delete=models.CASCADE, related_name="master_db_id")
     slave_db_id = models.ForeignKey(Database, on_delete=models.CASCADE, related_name="slave_db_id")
+    last_run = models.DateTimeField(null=True)
 
 class BackupInfo(models.Model):
     dbname = models.CharField(max_length=256)

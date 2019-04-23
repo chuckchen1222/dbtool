@@ -1,43 +1,27 @@
-<div class="container" >
-    <div class="row clearfix" style="height:60px">
-        <div class="col-md-6 column">
-            <h3>ROS Databases </h3>
+{% load staticfiles %}
+{% for ros in allros %}
+{% if ros.1 == True %}
+<tr>
+    <td>{{ ros.0 }}</a></td>
+    <td>{{ ros.1 }}</td>
+    <td>{{ ros.2 }}</td>
+    <td>
+        <button type="button" id="dump{{ forloop.counter }}" class="btn btn-primary" onclick="postcommand(this,getcol1(this));"> Dump </button>
+    </td>
+    <td>
+        <div class="btn-group">
+<button type="button" id="restoretobaitu{{ forloop.counter }}" class="btn btn-primary" onclick="postcommand(this,getcol1(this));"> Baitu </button>
+<button type="button" id="restoretolive{{ forloop.counter }}" class="btn btn-primary" onclick="postcommand(this,getcol1(this));" > Live-Site </button>
         </div>
-    </div>
-    <div class="row pre-scrollable" style="max-height:980px;overflow:auto;border:1px solid black;">
-        <div class="col-md-12 column" style="height:80">
-            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search...">
-        </div>
-        <table class="table table-bordered" id="myTable">
-            <tr>
-                <th>ROS DB</th><th>ENABLE</th><th>STATUS</th><th>Dump From TA</th><th>Restore</th>
-            </tr>
-            {% for ros in allros %}
-            {% if ros.1 == True %}
-            <tr>
-                <td id="dbname">{{ ros.0 }}</a></td>
-                <td>{{ ros.1 }}</td>
-                <td>{{ ros.2 }}</td>
-                <td>
-                    <button type="button" id="dump" class="btn btn-primary" onclick="postcommand(this,getcol1(this));"> Dump </button>
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <button type="button" id="restoretobaitu" class="btn btn-primary" onclick="postcommand(this,getcol1(this));"> Baitu </button>
-                        <button type="button" id="restoretolive" class="btn btn-primary" onclick="postcommand(this,getcol1(this));" > Live-Site </button>
-                    </div>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td>{{ ros.0 }}</a></td>
-                <td>{{ ros.1 }}</td>
-                <td>
-                    <p>This ROS DB is disable.</p>
-                </td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </table>
-    </div>
-</div>
+    </td>
+</tr>
+{% else %}
+<tr>
+    <td>{{ ros.0 }}</a></td>
+    <td>{{ ros.1 }}</td>
+    <td>
+        <p>This ROS DB is disable.</p>
+    </td>
+</tr>
+{% endif %}
+{% endfor %}

@@ -9,9 +9,9 @@ Version: 20190327
 """
 import json
 from login.functions.islogin import isLogin
+from logexec.models import ExecLogging
 from .functions import queryutils
 from .forms import QueryForms, OtherQueryForms
-from logexec.models import ExecLogging
 
 @isLogin
 def query(request):

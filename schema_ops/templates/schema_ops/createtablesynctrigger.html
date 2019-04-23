@@ -1,0 +1,52 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-04-18
+Version: 20190418
+"""
+-->
+
+{% extends 'base.html' %}
+{% block title %}Create Trigger{% endblock %}
+{% block content %}
+<div class="container" style="max-height:500px">
+    <h5>Create Sync Trigger.</h5>
+    <form action="" method = "POST">
+        {% csrf_token %}
+        <div class="row clearfix" sytle="height:200px">
+            <div class="col-md-12" style="max-height:80px">
+                {{ forms.dbname.label_tag }}
+                {{ forms.dbname }}
+            </div>
+            <div class="col-md-12" style="max-height:80px">
+                {{ forms.table.label_tag }}
+                {{ forms.table }}
+            </div>
+            <div class="col-md-12" style="max-height:80px">
+                <input type="submit" value = "Submit" data-toggle="modal" data-target="#myModal" onclick="return submitcfm();" />
+            </div>
+        </div>
+    </form>
+</div>
+{% if exec_hosts %}
+<div class="container">
+    <div class="row pre-scrollable" style="max-height:1000px;overflow:auto;border:1px solid black;">
+        {% for host in exec_hosts %}
+            <p>Create trigger on {{ tablename }} in {{ host }}/{{ dbname }} </p>
+        {% endfor %}
+    </div>
+</div>
+{% elif error %}
+<div class="container">
+    <div class="row clearfix" style="height:60px">
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>ERROR!</strong>
+            {% for err in error %}
+                <p> {{ err }} </p></br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

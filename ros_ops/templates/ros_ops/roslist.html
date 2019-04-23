@@ -33,35 +33,14 @@ Version: 20190327
             <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search...">
         </div>
         <table class="table table-bordered" id="myTable">
-            <tr>
-                <th>ROS DB</th><th>ENABLE</th><th>STATUS</th><th>Dump From TA</th><th>Restore</th>
-            </tr>
-            {% for ros in allros %}
-            {% if ros.1 == True %}
-            <tr>
-                <td id="dbname">{{ ros.0 }}</a></td>
-                <td>{{ ros.1 }}</td>
-                <td>{{ ros.2 }}</td>
-                <td>
-                    <button type="button" id="dump" class="btn btn-primary" onclick="postcommand(this,getcol1(this));"> Dump </button>
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <button type="button" id="restoretobaitu" class="btn btn-primary" onclick="postcommand(this,getcol1(this));"> Baitu </button>
-                        <button type="button" id="restoretolive" class="btn btn-primary" onclick="postcommand(this,getcol1(this));" > Live-Site </button>
-                    </div>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td>{{ ros.0 }}</a></td>
-                <td>{{ ros.1 }}</td>
-                <td>
-                    <p>This ROS DB is disable.</p>
-                </td>
-            </tr>
-            {% endif %}
-            {% endfor %}
+            <thead>
+                <tr>
+                    <th>ROS DB</th><th>ENABLE</th><th>STATUS</th><th>Dump From TA</th><th>Restore</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% include 'listtable.html' %}
+            </tbody>
         </table>
     </div>
 </div>
@@ -76,15 +55,15 @@ Version: 20190327
         return col1;
     }
     function postcommand(obj,col1){
-        if ( obj.id == 'dump' ){
+        if ( obj.id.startsWith('dump') ){
             var action = 'redump';
             var r=confirm('Are you sure redump ' + col1 +' from TA?');
         }
-        else if( obj.id == 'restoretobaitu' ) {
+        else if( obj.id.startsWith('restoretobaitu') ) {
             var action = 'restoretobaitu';
             var r=confirm('Are you restore DB ' + col1 +' to DaoDao Baitu?');
         }
-        else if( obj.id == 'restoretolive'){
+        else if( obj.id.startsWith('restoretolive') ){
             var action = 'restoretolive';
             var r=confirm('Are you restore DB ' + col1 +' to DaoDao Live-Site?');
         }
@@ -99,6 +78,11 @@ Version: 20190327
 </script>
 <script>
     $(function(){
+        flag()
+        setInterval("refresh()", 10000);
+    });
+
+    function flag() {
         var tableId = document.getElementById("myTable")
         for(var i=1;i<tableId.rows.length;i++){
             var valueTd = tableId.rows[i].cells[2].innerHTML;
@@ -109,10 +93,17 @@ Version: 20190327
                 tableId.rows[i].style.backgroundColor = "pink";
             }
         }
-        setTimeout(function(){
-            window.location.reload(1);
-            }, 38888);
-    });
+    }
+
+    function refresh() {
+        $.ajax({
+            url: 'refreshstatus/',
+            success: function(data) {
+                $('#myTable tbody').last().html(data);
+                flag();
+            }
+        });
+    }
 </script>
 <script>
 </script>

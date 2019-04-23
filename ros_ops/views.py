@@ -52,13 +52,3 @@ def refreshStatus(request):
     context = {'roslist':roslist, 'allros': allros, 'error': error }
     return render(request, 'ros_ops/listtable.html', context)
 
-
-
-
-
-
-
-
-
-
-

@@ -74,6 +74,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'dbops/templates').replace('\\','/'),
+            os.path.join(BASE_DIR, 'ros_ops', 'templates', 'ros_ops'),
 ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -131,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -161,7 +162,7 @@ basedn = "dc=daodao,dc=com"
 AUTH_LDAP_SERVER_URI = 'ldap://192.168.4.193:389'
 AUTH_LDAP_BIND_DN = ""
 AUTH_LDAP_BIND_PASSWORD = ""
-AUTH_LDAP_USER_SEARCH = LDAPSearch('dc=daodao,dc=com', ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+AUTH_LDAP_USER_SEARCH = LDAPSearch('ou=people,dc=daodao,dc=com', ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
 
 AUTH_LDAP_USER_ATTR_MAP = {  
     "first_name": "givenName",

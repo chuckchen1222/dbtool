@@ -9,11 +9,11 @@ Version: 20190318
 {% extends 'base.html' %}
 {% block title %}SQL Query{% endblock %}
 {% block content %}
-<div class="container" style="height:260px">
+<div class="container" style="max-height:2600px">
     <h5>SQL Query.</h5>
     <form action="" method = "POST">
         {% csrf_token %}
-        <div class="row clearfix" sytle="height:220px">
+        <div class="row clearfix" sytle="max-height:2200px">
             <div class="col-md-4 form-group" style="height:30px">
                     {{ QueryForms.dbname.label_tag }}
                     {{ QueryForms.dbname}}
@@ -27,7 +27,7 @@ Version: 20190318
                     {% endfor %}
             </div>
         </div>
-        <div class="row clearfix" style="height:100px">
+        <div class="row clearfix" style="max-height:1000px">
             <div class="col-md-12" style="max-height:80px">
                 {{ QueryForms.sql }}
             </div>

@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate,login as auth_login,logout as auth_
 from django.contrib.auth.models import User
 import ldap 
 from logexec.models import ExecLogging
+import json
 
 
 def index(request):
@@ -37,12 +38,9 @@ def login(request):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = username
-                    ExecLogging.objects.create(user=request.session['user_name'], exec_command=json.dumps({ 'user_id': user_id,'login': "logined" }))
+                    ExecLogging.objects.create(user=username, exec_command=json.dumps({ 'user_id': user.id,'login': "logined" }))
                     return redirect('/index/')
-                else:
-                    message = "Username or Password not correct!"
             except Exception as e:
-                print (e)
                 message = "User not exist."
         return render(request, 'login/login.html', locals())
  
@@ -53,6 +51,5 @@ def logout(request):
     if not request.session.get('is_login',None):
         return redirect('/index/')
     request.session.flush()
- 
     return redirect('/index/')
  

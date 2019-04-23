@@ -82,6 +82,7 @@ def updateServerIsPrimary():
                 updateInfoToOps(u_sql_s)
         except Exception as e:
             logger.error('updateServerIsPrimary error: hostname: ' + hostname + ' , exception: ' + str(e))
+            continue
     updateInfoToOps('CLUSTER db_ops_host USING db_ops_host_pkey;')
 
 # truncate table
@@ -103,16 +104,25 @@ def resetOpsSequence(sequencename):
 
 # 查询一个host中所有的DB名
 def getAllDBNameFromServer(host):
-    sql = 'SELECT datname FROM pg_database WHERE datname NOT IN (\'template0\',\'template1\',\'postgres\')'
-    db = DataBase(host=host,database='postgres', user='dbadmin', password='',port=5432)
-    dbs = db.query(sql)
-    return dbs
+    dbs = []
+    try:
+        sql = 'SELECT datname FROM pg_database WHERE datname NOT IN (\'template0\',\'template1\',\'postgres\')'
+        db = DataBase(host=host,database='postgres', user='dbadmin', password='',port=5432)
+        dbs = db.query(sql)
+    except Exception as e:
+        logger.error(e)
+    finally:
+        return dbs
 
 # 查询数据库的大小
 def getDBSizeFromServer(host,dbname):
-    sql = 'SELECT pg_size_pretty(pg_database_size(\'%s\'))' % dbname
-    db = DataBase(host=host,database=dbname, user='dbadmin', password='',port=5432)
-    dbsize = db.query(sql)
+    dbsize = [[''],]
+    try:
+        sql = 'SELECT pg_size_pretty(pg_database_size(\'%s\'))' % dbname
+        db = DataBase(host=host,database=dbname, user='dbadmin', password='',port=5432)
+        dbsize = db.query(sql)
+    except Exception as e:
+        logger.error(e)
     return dbsize[0][0]
 
 # 获取数据库topology
@@ -153,9 +163,13 @@ def getDBIsPgSync(host,dbname):
 
 # 获取pgsync mode
 def getPgSyncMode(host,dbname):
-    sql = 'SELECT replication_mode FROM dbmirror_mode;'
-    db = DataBase(host=host,database=dbname, user='dbadmin', password='',port=5432)
-    pgsyncmode = db.query(sql)
+    pgsyncmode = [[''],]
+    try:
+        sql = 'SELECT replication_mode FROM dbmirror_mode;'
+        db = DataBase(host=host,database=dbname, user='dbadmin', password='',port=5432)
+        pgsyncmode = db.query(sql)
+    except Exception as e:
+        logger.error(e)
     return pgsyncmode[0][0]
 
 # 插入DB 信息到 tool DB
@@ -185,6 +199,7 @@ def InsertDBInfoToOps():
                 updateInfoToOps(sql)
             except Exception as e:
                 logger.error('InsertDBInfoToOps error: hostname: ' + hostname + ' , dbname' + dbname + '  , exception: ' + str(e))
+                continue
 
 
 ####################
@@ -262,14 +277,14 @@ def insertTableInfo():
     tooldb = DataBase(host = 'dbtool01s',database = 'tripmaster_dbtool')
     dbsinfo = getDBInfoFromToolDB()
     for dbinfo in dbsinfo:
-        v_hostname = dbinfo[0]
-        dbname = dbinfo[1]
-        dbid = dbinfo[2]
-        db = DataBase(host = v_hostname , database = dbname )
-        tables = getTableNameFromDB(db)
-        logger.info('Collect Table info in '+ v_hostname + ':' + dbname)
-        for table in tables:
-            try:
+        try:
+            v_hostname = dbinfo[0]
+            dbname = dbinfo[1]
+            dbid = dbinfo[2]
+            db = DataBase(host = v_hostname , database = dbname )
+            tables = getTableNameFromDB(db)
+            logger.info('Collect Table info in '+ v_hostname + ':' + dbname)
+            for table in tables:
                 tablename = table[1]
                 schemaname = table[0]
                 tablesize = getTableSizeFromDB(db, schemaname, tablename)
@@ -282,8 +297,8 @@ def insertTableInfo():
                 VALUES (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', %s, %s, %s)
                 ''' % (tablename, schemaname, tablesize, tablerows, is_sync, table_auto_anylyze, table_auto_vacuum, dbid)
                 tooldb.update(sql_insertinfo)
-            except Exception as e:
-                logger.error('insertTableInfo error: hostname: ' + hostname + 'dbname: ' + dbname +  'tablename: ' + tablename +  ' , exception: ' + str(e))
+        except Exception as e:
+            logger.error('insertTableInfo error: hostname: ' + hostname + 'dbname: ' + dbname +  'tablename: ' + tablename +  ' , exception: ' + str(e))
 
 
 ############################################
@@ -326,23 +341,97 @@ def insertColumnInfo():
         tablesinfo = getTablesInfoFromToolDB(tooldb, dbid)
         logger.info('Collect Column info in ' + v_hostname + ':' + dbname)
         for table in tablesinfo:
-            tableid = table[0]
-            schemaname = table[1]
-            tablename = table[2]
-            db = DataBase(host = v_hostname , database = dbname)
-            cols = getColumnsInfoFromDB(db, schemaname, tablename)
-            if cols:
-                for col in cols:
-                    colname = col[0]
-                    coltype = col[1]
-                    is_notnull = col[2]
-                    sql_insertinfo = ''' INSERT INTO table_ops_columns(column_name, column_type, is_notnull, table_id_id)
-                    VALUES (\'%s\', \'%s\', \'%s\', \'%s\')
-                    ''' % (colname, coltype, is_notnull, tableid)
-                    tooldb.update(sql_insertinfo)
-            else:
-                logger.warning(str('Host: ' + v_hostname + ', DB: ' + dbname + ', Table: ' + tablename))
+            try:
+                tableid = table[0]
+                schemaname = table[1]
+                tablename = table[2]
+                db = DataBase(host = v_hostname , database = dbname)
+                cols = getColumnsInfoFromDB(db, schemaname, tablename)
+                if cols:
+                    for col in cols:
+                        colname = col[0]
+                        coltype = col[1]
+                        is_notnull = col[2]
+                        sql_insertinfo = ''' INSERT INTO table_ops_columns(column_name, column_type, is_notnull, table_id_id)
+                        VALUES (\'%s\', \'%s\', \'%s\', \'%s\')
+                        ''' % (colname, coltype, is_notnull, tableid)
+                        tooldb.update(sql_insertinfo)
+                else:
+                    logger.warning(str('Host: ' + v_hostname + ', DB: ' + dbname + ', Table: ' + tablename))
+            except Exception as e:
+                logger.warning('Host: ' + v_hostname + str(e))
+                continue
 
+
+############################################
+# pgsync 信息
+# 
+############################################
+
+def getAllPgSyncDBFromTool():
+    sql = ''' SELECT id, dbname, v_hostname FROM  db_ops_database 
+    WHERE is_pgsync = 't'
+      AND env = \'live\'
+      AND pgsync_mode = \'rw\'
+    ORDER BY v_hostname;
+    '''
+    db = DataBase(host='dbtool01s.daodao.com',database='tripmaster_dbtool')
+    result = db.query(sql)
+    return result
+
+def getPgSyncHosts(host,dbname):
+    result = []
+    sql = ''' SELECT slave_host_name, slave_database, last_run FROM dbmirror_mirrorhost
+    WHERE slave_database IS NOT NULL
+    '''
+    try:
+        db = DataBase(host=host, database=dbname, user='dbadmin')
+        result = db.query(sql)
+    except Exception as e:
+        logger.error('Get PgSync Hosts From DB Error: ' + str(e))
+    finally:
+        return result 
+
+def getSecondaryDBIdFromTool(v_host, dbname):
+    if v_host == 'tripmonster':
+        v_host = 'tm01c'
+    if dbname == 'tripmonster' or dbname == 'ddmonster':
+        sql = '''SELECT id FROM db_ops_database
+        WHERE dbname = \'%s\'
+          AND v_hostname = \'%s\'
+        ''' %( dbname, v_host)
+    else:
+        sql = ''' SELECT id FROM db_ops_database
+        WHERE dbname = \'%s\'
+          AND pgsync_mode = \'ro\'
+          AND env = \'live\'
+        ''' % (dbname)
+    db = DataBase(host='dbtool01s.daodao.com',database='tripmaster_dbtool')
+    result = db.query(sql)
+    return result[0][0]
+
+def insertPgSyncHostsInfo():
+    truncOpsTable('db_ops_pgsync')
+    resetOpsSequence('db_ops_pgsync_id_seq')
+    dbsinfo = getAllPgSyncDBFromTool()
+    tooldb = DataBase(host='dbtool01s.daodao.com',database='tripmaster_dbtool')
+    for db in dbsinfo:
+        dbid_p = db[0]
+        dbname = db[1]
+        hostname = db[2]
+        mirrorhosts = getPgSyncHosts(hostname, dbname)
+        for mir_host in mirrorhosts:
+            host_s = mir_host[0]
+            dbname_s = mir_host[1]
+            last_run = mir_host[2]
+            dbid_s = getSecondaryDBIdFromTool(host_s,dbname_s)
+            sql = ''' INSERT INTO  db_ops_pgsync(dbname, master_db_id_id, slave_db_id_id, last_run)
+            VALUES (\'%s\', \'%s\', \'%s\', \'%s\')
+            ''' % (dbname, dbid_p, dbid_s, last_run)
+            try:
+                tooldb.update(sql)
+            except Exception as e:
+                logger.error('Insert PGSync Host ERROR: ' + str(e))
 
 ############################################
 # main
@@ -363,6 +452,9 @@ def main():
 
         logger.info('Column Info...')
         insertColumnInfo()
+
+        logger.info('PGSync Info...')
+        insertPgSyncHostsInfo()
 
     except Exception as e:
         logger.error(e)

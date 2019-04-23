@@ -91,6 +91,7 @@ class DataBase():
     # 
     def update(self, sql):
         flag = False
+        exception = ''
         if (self._conn):
             try:
                 self._cursor.execute(sql)
@@ -98,8 +99,8 @@ class DataBase():
                 flag = True
             except Exception as e:
                 flag = False
-                print (e)
-        return flag
+                exception = e
+        return flag, exception
 
     def explain(self, sql):
         res = ''

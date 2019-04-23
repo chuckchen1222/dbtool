@@ -30,6 +30,7 @@ from sql_ops import views as sql_views
 from server_ops import views as server_views
 from table_ops import views as table_views
 from ros_ops import views as ros_views
+from schema_ops import views as schema_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,4 +50,8 @@ urlpatterns = [
     path(r'table_ops/tablelist/', table_views.tableList),
     path(r'ros_ops/admin/', ros_views.rosList),
     path(r'ros_ops/admin/refreshstatus/', ros_views.refreshStatus),
+    path(r'schema_ops/dbwschemachange/', schema_views.dbwSchemaChange),
+    path(r'schema_ops/createtablesynctrigger/', schema_views.createTableSyncTrigger),
+    path(r'schema_ops/dbrschemachange/', schema_views.dbrSchemaChange),
+    path(r'schema_ops/rosddschemachange/', schema_views.rosDDSchemaChange),
 ]
