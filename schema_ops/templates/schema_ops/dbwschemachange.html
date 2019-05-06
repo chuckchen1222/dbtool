@@ -40,7 +40,8 @@ Version: 20190417
         {% endfor %}
     </div>
 </div>
-{% elif failed_env %}
+{% endif %}
+{% if failed_env %}
 <div class="container">
     <div class="row clearfix" style="max-height:1000px">
         <div class="alert alert-warning">

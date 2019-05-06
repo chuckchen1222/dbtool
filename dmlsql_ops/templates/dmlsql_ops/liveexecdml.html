@@ -1,0 +1,57 @@
+<!--
+"""
+Author: chzhang@tripadvisor.com
+Date: 2019-04-30
+Version: 20190430
+"""
+-->
+
+{% extends 'base.html' %}
+{% block title %}Live DBW DML{% endblock %}
+{% block content %}
+<div class="container" style="max-height:5000px">
+    <h5>Execute Live DBW DML.</h5>
+    <form action="" method = "POST">
+        {% csrf_token %}
+        <div class="row clearfix" sytle="max-height:2000px">
+            <div class="col-md-12" style="max-height:80px">
+                {{ forms.dbname.label_tag }}
+                {{ forms.dbname}}
+            </div>
+            <div class="col-md-12" style="max-height:500px">
+                {{ forms.sql }}
+            </div>
+            <input type="submit" value = "Submit" data-toggle="modal" data-target="#myModal" onclick="return submitcfm();" />
+        </div>
+    </form>
+</div>
+
+{% if result %}
+<div class="container">
+    <div class="row pre-scrollable" style="max-height:1200px;overflow:auto;border:1px solid black;">
+        <p>You searched Host: <strong>{{ hostname }}</strong></p>
+        <p>
+        <table class="table table-bordered">
+            {% for res in result %}
+            <tr>
+                <td style="text-align:right;">{{ res }} </td>
+            </tr>
+            {% endfor %}
+            </table>
+    </div>
+</div>
+{% endif %}
+{% if error %}
+<div class="container">
+    <div class="row clearfix" style="height:60px">
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>ERROR!</strong>
+            {% for err in error %}
+                <pre> {{ err }} </pre></br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

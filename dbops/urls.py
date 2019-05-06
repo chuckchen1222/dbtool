@@ -31,6 +31,7 @@ from server_ops import views as server_views
 from table_ops import views as table_views
 from ros_ops import views as ros_views
 from schema_ops import views as schema_views
+from dmlsql_ops import views as dmlsql_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,4 +55,5 @@ urlpatterns = [
     path(r'schema_ops/createtablesynctrigger/', schema_views.createTableSyncTrigger),
     path(r'schema_ops/dbrschemachange/', schema_views.dbrSchemaChange),
     path(r'schema_ops/rosddschemachange/', schema_views.rosDDSchemaChange),
+    path(r'dmlsql_ops/liveexecdml/', dmlsql_views.liveExecDML),
 ]

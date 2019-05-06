@@ -17,6 +17,17 @@ def getHostFromDbName(dbname,env):
     v_hostname = db.query(sql)
     return v_hostname
 
+def getHostFromDbnameExcludeHost(dbname, env, exclude_host):
+    sql = '''select v_hostname from db_ops_database 
+    where dbname = \'%s\'
+      and env = \'%s\'
+      and v_hostname not in (\'tm01c\',\'tm04c\',\'syncdb01c\',\'tm01s\')
+      and v_hostname <> \'%s\'
+    ''' % (dbname, env, exclude_host )
+    db = dbutils.DataBase(host='dbtool01s.daodao.com')
+    v_hostname = db.query(sql)
+    return v_hostname
+
 def getTMHostFromTool():
     sql = '''select v_hostname from db_ops_database 
     where dbname = \'tripmonster\'

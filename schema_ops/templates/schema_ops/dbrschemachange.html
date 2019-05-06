@@ -14,12 +14,6 @@ Version: 20190318
     <form action="" method = "POST">
         {% csrf_token %}
         <div class="row clearfix" sytle="height:2000px">
-            <div class="col-md-12" style="max-height:50px">
-                <label class="col-md-3 control-label">{{ forms.env.label }}</label>
-                <div class="select">
-                    {{ forms.env }}
-                </div>
-            </div>
             <div class="col-md-12" style="max-height:80px">
                 {{ forms.dbname.label_tag }}
                 {{ forms.dbname}}
@@ -31,35 +25,44 @@ Version: 20190318
         </div>
     </form>
 </div>
-{% if query_results %}
+
+{% if success_env %}
 <div class="container">
     <div class="row pre-scrollable" style="max-height:1000px;overflow:auto;border:1px solid black;">
-        <p>You searched DB Type: <strong>{{ dbtype }}</strong></p>
-        <p>You searched Host: <strong>{{ host }}:{{ port }}</strong></p>
-        <p>You searched DB  : <strong>{{ dbname }}</strong></p>
-        <p>You searched for : <strong>{{ query  }}</strong></p>
-        <table class="table table-bordered">
-            {% for result in query_results %}
-            <tr>
-                {% for i in result %}
-                    <td style="text-align:right;">{{ i }} </td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-            </table>
+        <p><strong>If you add new table to commerce. </strong></p>
+        <p><strong>Don't forget to add the table name to pgsync conf white list...  </strong></p>
+        {% for success in success_env %}
+            <p><strong>Success: {{ success }}</strong></p>
+        {% endfor %}
     </div>
 </div>
-{% elif error %}
+{% endif %}
+{% if failed_env %}
 <div class="container">
-    <div class="row clearfix" style="height:60px">
+    <div class="row clearfix" style="max-height:1000px">
         <div class="alert alert-warning">
             <a class="close" data-dismiss="alert">×</a>
             <strong>ERROR!</strong>
-            {% for err in error %}
-                <p> {{ err }} </p></br>
+            {% for failed in failed_env %}
+                <p> ERROR in {{ failed.0 }}. </p></br>
+                <p> {{ failed.1 }} </p></br>
             {% endfor %}
         </div>
     </div>
 </div>
 {% endif %}
+
+{% if error %}
+<div class="container">
+    <div class="row clearfix" style="max-height:1000px">
+        <div class="alert alert-warning">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>ERROR!</strong>
+            {% for err in error %}
+                <pre> {{ err }} </pre></br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif%}
 {% endblock %}

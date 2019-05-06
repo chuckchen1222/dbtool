@@ -13,8 +13,8 @@ from db_ops.models import Database,Host
 @isLogin
 def tableColList(request, servername, dbname, tablename):
     dbid = Database.objects.filter(v_hostname = servername).filter(dbname = dbname).values_list("id")
-    tableid = Tables.objects.filter(db_id = dbid[0][0]).values_list("id")
-    collist = Columns.objects.filter(table_id_id = tableid[0][0])
+    tableid = Tables.objects.filter(db_id = dbid[0][0]).filter(table_name = tablename).values_list("id")
+    collist = Columns.objects.filter(table_id_id = tableid[0][0]).order_by('id')
     context = { 'servername': servername, 'dbname': dbname, 'tablename': tablename, 'collist': collist }
     return render(request, 'table_ops/tablecollist.html', context)
 

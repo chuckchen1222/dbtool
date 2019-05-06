@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'sql_ops',
     'table_ops',
     'ros_ops',
+    'dmlsql_ops',
     'logexec',
 ]
 
@@ -159,7 +160,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  
 )  
 basedn = "dc=daodao,dc=com"
-AUTH_LDAP_SERVER_URI = 'ldap://XXX.XXX.XXX.XXX:389'
+AUTH_LDAP_SERVER_URI = 'ldap://192.168.4.193:389'
 AUTH_LDAP_BIND_DN = ""
 AUTH_LDAP_BIND_PASSWORD = ""
 AUTH_LDAP_USER_SEARCH = LDAPSearch('ou=people,dc=daodao,dc=com', ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
