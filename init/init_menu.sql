@@ -4,7 +4,10 @@ insert into login_menu values ( 3, 'Database','/db_ops/dblist/','t','live');
 insert into login_menu values ( 4, 'Table Search','/table_ops/tablesearch/','t','live');
 insert into login_menu values ( 5, 'SQL Query','/sql/ddquery/','t','live');
 insert into login_menu values ( 6, 'ROS ADMIN','/ros_ops/admin/','t','live');
-insert into login_menu values (11, 'Schema Change','/schema_ops/dbwschemachange/','f','test');
+insert into login_menu values (11, 'Schema Change','/schema_ops/dbwschemachange/','f','live');
+insert into login_menu values (12,'Live DML', '/dmlsql_ops/liveexecdml/','f','live');
+insert into login_menu values (21,'Monitor PGSync Lag','http://monitor03c:3000/d/JbNUiOsmz/db-my-pgsync-lag-overview?refresh=5s&orgId=1',
+                            't','live and jump to grafana');
 
 
 --login_toolsbar;
@@ -13,8 +16,8 @@ insert into login_toolsbar values ( 3,'Database','/db_ops/dblist/','f','t','live
 insert into login_toolsbar values ( 4,'Table Search','/table_ops/tablesearch/','f','t','live');
 insert into login_toolsbar values ( 5,'SQL Query','/sql/ddquery/','t','t','live');
 insert into login_toolsbar values ( 6,'ROS ADMIN','/ros_ops/admin/','f','t','live');
-insert into login_toolsbar values (11,'Schema Change','/schema_ops/dbwschemachange/','t','t','test');
-
+insert into login_toolsbar values (11,'Schema Change','/schema_ops/dbwschemachange/','t','t','live');
+insert into login_toolsbar values (12,'Live DML', '/dmlsql_ops/liveexecdml/','f','f','live');
 
 --login_toolsbardropdown;
 insert into login_toolsbardropdown values (1,'Query DaoDao DB','/sql/ddquery/','t','live','5');
