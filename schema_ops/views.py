@@ -27,7 +27,7 @@ def dbwSchemaChange(request):
         if user not in ('sli', 'bcui', 'fkang', 'chzhang'):
             error.append('Permission Deny!')
             context = { 'error': error, 'forms': forms}
-            return render(request, 'ros_ops/roslist.html', context)
+            return render(request, 'schema_ops/dbwschemachange.html', context)
         if forms.is_valid():
             env = forms.cleaned_data['env']
             dbname = forms.cleaned_data['dbname']
@@ -78,7 +78,7 @@ def createTableSyncTrigger(request):
         if user not in ('sli', 'bcui', 'fkang', 'chzhang'):
             error.append('Permission Deny!')
             context = { 'error': error, 'forms': forms}
-            return render(request, 'ros_ops/roslist.html', context)
+            return render(request, 'schema_ops/createtablesynctrigger.html', context)
         if forms.is_valid():
             dbname = forms.cleaned_data['dbname']
             tablename = forms.cleaned_data['table']
@@ -100,7 +100,7 @@ def dbrSchemaChange(request):
         if user not in ('sli', 'bcui', 'fkang', 'chzhang'):
             error.append('Permission Deny!')
             context = { 'error': error, 'forms': forms}
-            return render(request, 'ros_ops/roslist.html', context)
+            return render(request, 'schema_ops/dbrschemachange.html', context)
         if forms.is_valid():
             env = forms.cleaned_data['env']
             dbname = forms.cleaned_data['dbname']
@@ -144,7 +144,7 @@ def rosDDSchemaChange(request):
         if user not in ('sli', 'bcui', 'fkang', 'chzhang'):
             error.append('Permission Deny!')
             context = { 'error': error, 'forms': forms}
-            return render(request, 'ros_ops/roslist.html', context)
+            return render(request, 'schema_ops/rosddschemachange.html', context)
         if forms.is_valid():
             env = forms.cleaned_data['env']
             dbname = forms.cleaned_data['dbname']

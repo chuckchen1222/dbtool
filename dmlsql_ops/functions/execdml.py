@@ -11,6 +11,36 @@ import dbutils
 from .sqlparse import SQLParse
 import paramiko
 
+# 解析每条SQL，解析出需要备份的SQL，并去执行
+def getAllBackupSQLs(sql):
+    backup_sql = []
+    if isinstance(sql,list):
+        sql = " ".join(sql)
+    sqls = sql.split(";")
+    for i in sqls:
+        if i:
+            i_sql = SQLParse(i)
+            op = i_sql.getSQLOpType()
+            if op == 'u':
+                if not i_sql.isIncludeWhere():
+                    backup_sql.clear()
+                    backup_sql.append('error')
+                    return backup_sql
+                bak_sql = i_sql.backupUpdateOldValueSQL()
+                backup_sql.append(bak_sql)
+            elif op == 'd':
+                if not i_sql.isIncludeWhere():
+                    backup_sql.clear()
+                    backup_sql.append('error')
+                    return backup_sql
+                bak_sql = i_sql.backupDeleteOldValueSQL()
+                backup_sql.append(bak_sql)
+            elif op == 0:
+                backup_sql.clear()
+                backup_sql.append('error')
+    return backup_sql
+
+
 ####################
 # 在sync01s 执行命令
 ####################
@@ -56,15 +86,5 @@ or
 
 @ExecRemoteHost
 def execSchemaChangeRomteCommand(host, dbname, sql):
-    import_sql = SQLParse(sql)
-    sql_commands = import_sql.getSQLCommand()
-    for sql_command in sql_commands:
-        if sql_command not in ['e1']:
-            command = '''psql -U %s -d %s -h %s -At -c "%s" ''' % (dbname, dbname, host, sql_command)
-            yield command
-        else:
-            yield "error"
-
-
-
-
+    command = '''psql -U %s -d %s -h %s -At -c "%s" ''' % (dbname, dbname, host, sql)
+    yield command

@@ -53,48 +53,38 @@ class SQLParse():
         s = re.match(c, sql, re.I|re.M)
         return s.groups()
     
-    def backupUpdateOldValue(self):
+    # 解析update语句，取出tablename,更新内容, 更新条件
+    def deleteSQLParse(self):
+        sql = self.formatSQL()
+        c = r'delete from (\w*) where (.*)'
+        s = re.match(c, sql, re.I|re.M)
+        return s.groups()
+
+    def backupUpdateOldValueSQL(self):
         sql = self.updateSQLParse()
         tablename = sql[0]
         condition = sql[2]
         backSQL = ''' select * from %s where %s ''' % (tablename, condition)
         return backSQL
+    
+    def backupDeleteOldValueSQL(self):
+        sql = self.deleteSQLParse()
+        tablename = sql[0]
+        condition = sql[1]
+        backSQL = ''' select * from %s where %s ''' % (tablename, condition)
+        return backSQL
 
-    def getSQLCommand(self):
-        op = self.getSQLOpType()
-        if op == 'i':
-            sqlcommand = self.addReturningToSQL()
-            yield sqlcommand
-        elif op == 'd':
-            isContainWhere = self.isIncludeWhere()
-            if isContainWhere:
-                sqlcommand = self.addReturningToSQL()
-                yield sqlcommand
-            else:
-                # need to define some error for this
-                # e1 meas 'no where in SQL'
-                yield 'e1'
-        elif op == 'u':
-            isContainWhere = self.isIncludeWhere()
-            if isContainWhere:
-                backupsql = self.backupUpdateOldValue()
-                yield backupsql
-                yield self.sql
-            else:
-                yield 'e1'
-        elif not op:
-            yield 'e1'
             
 ####################
 # 步骤：
 # 1. 判断SQL类型(insert, delete, update)
 # 2. insert
-# 2.1 加上 " returning *"
-# 2.2 执行，保存执行结果
+# 2.1 执行，保存执行语句
 # 3. delete
 # 3.1 判断有无where条件。
-# 3.2 加上 " returning *"
-# 3.3 执行，保存执行结果
+# 3.2 拆解语句
+# 3.3 拼凑backup语句，并执行，保存结果
+# 3.4 执行，保存执行结果
 # 4. update
 # 4.1 判断有无where条件。
 # 4.2 拆解语句

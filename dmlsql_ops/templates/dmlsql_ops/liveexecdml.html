@@ -47,9 +47,7 @@ Version: 20190430
         <div class="alert alert-warning">
             <a class="close" data-dismiss="alert">×</a>
             <strong>ERROR!</strong>
-            {% for err in error %}
-                <pre> {{ err }} </pre></br>
-            {% endfor %}
+            <pre>{% for err in error %}{{ err }}{% endfor %}</pre>
         </div>
     </div>
 </div>

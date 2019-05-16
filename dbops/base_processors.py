@@ -10,5 +10,5 @@ def toolsBar(request):
     return {"navbarlist": navbarlist}
 
 def toolsBardropdown(request):
-    dropdownlist = ToolsbarDropDown.objects.all().order_by('toolsbar_id_id')
+    dropdownlist = ToolsbarDropDown.objects.filter(is_active='True').order_by('toolsbar_id_id')
     return { 'dropdownlist': dropdownlist }

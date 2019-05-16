@@ -56,4 +56,5 @@ urlpatterns = [
     path(r'schema_ops/dbrschemachange/', schema_views.dbrSchemaChange),
     path(r'schema_ops/rosddschemachange/', schema_views.rosDDSchemaChange),
     path(r'dmlsql_ops/liveexecdml/', dmlsql_views.liveExecDML),
+    path(r'dmlsql_ops/liveexecdmlfile/', dmlsql_views.liveExecDMLFile),
 ]
